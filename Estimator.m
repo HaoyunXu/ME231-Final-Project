@@ -1,4 +1,7 @@
-function [xchat, thetachat, vchat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, betav, betaleft, betaright, N, dt)
+function [xchat, thetachat, vchat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt)
+betav=0.5;
+betaleft=0.5;
+betaright=0.5;
 % Computing averages
 vL=History(1,:);
 dL=History(2,:);
