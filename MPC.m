@@ -10,6 +10,8 @@
  
  
  %% System Model Parameters
+ 
+ % State Vector = [X Vx Pitch Pitch_Rate Y Vy Roll Roll_Rate Z Vz]^T
  bp0=1;
  bp1=1;
  g=9.8;
@@ -20,17 +22,18 @@
  ar=1;
  m=1;
  B=[zeros(3,3);-ap 0 0;zeros(3,3);0 -ar 0;0 0 0;0 0 1/m];
+ G=[zeros(9,1);-g];
+ % Computing Discrete time system matrices
  Temp=ss(A,B,[],[]);
  AT=Temp.A;
  BT=Temp.B;
- G=[zeros(9,1);-g];
  Temp=ss(A,G,[],[]);
  GT=Temp.B;
  
  %% Constraint Sets
  % Input Constraints
  uL=[-1/18*pi*ones(2,1);0];uU=[1/18*pi*ones(2,1);5];
- % State Constraints
+ % State Constraints of the form A_ie*X<=b_ie
  A_ie=[0 0 1 0 0 0 0 0 0 0;
        0 0 -1 0 0 0 0 0 0 0;
        0 0 0 1 0 0 0 0 0 0;
@@ -51,7 +54,6 @@
  
  
 %% Solving CFTOC 
- Oltraj=zeros(2*(M+1),N+1);
  [feas, xtemp, utemp, JOpt] = solve_cftoc(AT, BT, GT, P, Q, R, N, x0, A_ie, b_ie, uL, uU, A_f, b_f, Xref);                                     
  if feas==true
      X_wp=xtemp(:,2);
