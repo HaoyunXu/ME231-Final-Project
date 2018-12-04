@@ -16,15 +16,16 @@
  br0=1;
  br1=1;
  A=blkdiag([0 1 0 0;0 0 g 0;0 0 0 1;0 0 -bp0 -bp1],[0 1 0 0;0 0 g 0;0 0 0 1;0 0 -br0 -br1],[0 1;0 0]);
- AT=expm(A*del_T);
  ap=1;
  ar=1;
  m=1;
  B=[zeros(3,3);-ap 0 0;zeros(3,3);0 -ar 0;0 0 0;0 0 1/m];
- PHI= @(t) expm(A*t);
- BT=integral(PHI,0,del_T)*B;
+ Temp=ss(A,B,[],[]);
+ AT=Temp.A;
+ BT=Temp.B;
  G=[zeros(9,1);-g];
- GT=integral(PHI,0,del_T)*G;
+ Temp=ss(A,G,[],[]);
+ GT=Temp.B;
  
  %% Constraint Sets
  % Input Constraints
