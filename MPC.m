@@ -21,7 +21,7 @@
  ar=1;
  m=1;
  B=[zeros(3,3);-ap 0 0;zeros(3,3);0 -ar 0;0 0 0;0 0 1/m];
- PHI= @(t) expm(A*t);
+ PHI= @(t) expm(A.*t);
  BT=integral(PHI,0,del_T)*B;
  G=[zeros(9,1);-g];
  GT=integral(PHI,0,del_T)*G;

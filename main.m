@@ -1,6 +1,12 @@
 %initialize receiver
-receiver = rossubscriber('/pose');
-
+receiver1 = rossubscriber('/VehicleAngVelo');
+pause(1)
+receiver2 = rossubscriber('/VehicleAtt');
+pause(1)
+receiver3 = rossubscriber('/VehiclePos');
+pause(1)
+receiver4 = rossubscriber('/VehicleVelo');
+pause(1)
 %initialize publisher
 pub = rospublisher('/pose','geometry_msgs/Point');
 pause(2) %wait to ensure publisher is registered
@@ -23,6 +29,12 @@ Vbar = 1;
 Thetaleftbar = -pi/6;
 Thetarightbar = pi/6;
 while(1)
+    pos = receive(receiver3);
+    Att = receive(receiver2);
+    Vel = receive(receiver4);
+    AngVel = receive(receiver1);
+    droneState=[pos.X;Vel.X;Att.X;AngVel.X;pos.Y;Vel.Y;Att.Y;AngVel.Y;pos.Z;Vel.Z];
+    
     [xc,yc,vc,psi_c] = bikeFE(xc,yc,vc,psi_c,a(i),deltaF(i));
     i = i+1;
     
@@ -34,32 +46,12 @@ while(1)
     [xc_hat, thetac_hat, vc_hat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt);
     
     %
-    [f] = xref_interp(x0,[xc_hat;0],v0,[vc_hat;0]);
+    [f] = xref_interp([pos.X;pos.Y],[xc_hat;0],[Vel.X;Vel.Y],[vc_hat;0]);
     
     X_wp = MPC(droneState(1:10), f , [xc;yc] , Vbar);
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
     
-    send(pub,pubmsg);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    % time-out in 1000 seconds
-    posData = receive(receiver,1000);
-    
-    
-    
-    
+    send(pub,pubmsg);   
     
 end

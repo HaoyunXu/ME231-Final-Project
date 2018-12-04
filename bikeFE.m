@@ -1,4 +1,5 @@
-function [xp,yp,vp,psip] = bikeFE(x,y,v,psi,a,deltaF,TS=0.1)
+function [xp,yp,vp,psip] = bikeFE(x,y,v,psi,a,deltaF)
+    TS=0.1;
     beta = atan(1/2*tan(deltaF));
     xp = x + TS*(v*cos(psi+beta));
     yp = y + TS*(v*sin(psi+beta));
