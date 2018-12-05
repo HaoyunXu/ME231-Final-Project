@@ -8,7 +8,7 @@ pause(1)
 receiver4 = rossubscriber('/VehicleVelo');
 pause(1)
 %initialize publisher
-pub = rospublisher('/pose','geometry_msgs/Point');
+pub = rospublisher('/mpcinput','geometry_msgs/Point');
 pause(2) %wait to ensure publisher is registered
 pubmsg = rosmessage(pub);
 
@@ -33,6 +33,7 @@ while(1)
     Att = receive(receiver2);
     Vel = receive(receiver4);
     AngVel = receive(receiver1);
+    display('received')
     droneState=[pos.X;Vel.X;Att.X;AngVel.X;pos.Y;Vel.Y;Att.Y;AngVel.Y;pos.Z;Vel.Z];
     
     [xc,yc,vc,psi_c] = bikeFE(xc,yc,vc,psi_c,a(i),deltaF(i));
@@ -54,6 +55,7 @@ while(1)
     %extract desired waypoint for low level control
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
+    display(pubmsg.X,pubmsg.Y)
     
     send(pub,pubmsg);   
     
