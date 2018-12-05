@@ -1,7 +1,7 @@
-function [f] = xref_interp(x0,x1,v0,v1)
+function xref = xref_interp(x0,x1,v0,v1,dt)
 %% Interpolation
 % Input takes position and velocity at t=0 and t=1, i.e., x(0), x(1), v(0), v(1).
-% Returns the interpolation "function".
+% Returns the interpolation values. NOT function handle.
 % 
 % syms a b c d
 % syms t
@@ -30,5 +30,9 @@ abcd = [x0 x1 v0 v1]*[  2   -3   0   1;
                        -2    3   0   0;
                         1   -2   1   0;
                         1   -1   0   0];                    
+                    
+T = 0:dt:N*dt;
 
-f = @(t) abcd*[t^3; t^2; t; 1];
+% f = @(t) abcd*[t.^3; t.^2; t; 1];
+
+xref = abcd*[T.^3; T.^2; T; 1];
