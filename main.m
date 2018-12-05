@@ -45,10 +45,13 @@ while(1)
     %esitmation of car positions
     [xc_hat, thetac_hat, vc_hat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt);
     
-    %
-    [f] = xref_interp([pos.X;pos.Y],[xc_hat;0],[Vel.X;Vel.Y],[vc_hat;0]);
+    %path generation
+    f = xref_interp([pos.X;pos.Y],[xc_hat;0],[Vel.X;Vel.Y],[vc_hat;0],dt,N);
     
+    %path following with MPC
     X_wp = MPC(droneState(1:10), f , [xc;yc] , Vbar);
+    
+    %extract desired waypoint for low level control
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
     
