@@ -1,4 +1,4 @@
-function xref = xref_interp(x0,x1,v0,v1,dt)
+function xref = xref_interp(x0,x1,v0,v1,dt,N)
 %% Interpolation
 % Input takes position and velocity at t=0 and t=1, i.e., x(0), x(1), v(0), v(1).
 % Returns the interpolation values. NOT function handle.
