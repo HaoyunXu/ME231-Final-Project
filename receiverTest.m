@@ -7,9 +7,10 @@ receiver3 = rossubscriber('/VehiclePos');
 pause(1)
 receiver4 = rossubscriber('/VehicleVelo');
 pause(1)
-
 while(1)
+    disp('get here')
     pos = receive(receiver3)
+    disp('here2')
     Att = receive(receiver2)
     Vel = receive(receiver4)
     AngVel = receive(receiver1)

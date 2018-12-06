@@ -33,7 +33,7 @@ while(1)
     Att = receive(receiver2);
     Vel = receive(receiver4);
     AngVel = receive(receiver1);
-    display('received')
+    disp('received')
     droneState=[pos.X;Vel.X;Att.X;AngVel.X;pos.Y;Vel.Y;Att.Y;AngVel.Y;pos.Z;Vel.Z];
     
     [xc,yc,vc,psi_c] = bikeFE(xc,yc,vc,psi_c,a(i),deltaF(i));
