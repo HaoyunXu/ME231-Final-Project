@@ -45,11 +45,13 @@ while(1)
     
     %esitmation of car positions
     [xc_hat, thetac_hat, vc_hat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt);
-    
-    
+    xheading=xc+xc_hat*cos(psi_c-thetac_hat);
+    yheading=yc+xc_hat*sin(psi_c-thetac_hat);
+    vxheading=vc_hat*cos(psi_c-thetac_hat);
+    vyheading=vc_hat*sin(psi_c-thetac_hat);
     
     %path generation
-    f = xref_interp([pos.X;pos.Y;pos.Z],[xc_hat;0],[Vel.X;Vel.Y;Vel.Z],[vc_hat;0],dt,N);
+    f = xref_interp([pos.X;pos.Y;pos.Z],[xheading;yheading;0],[Vel.X;Vel.Y;Vel.Z],[vxheading;vyheading;0],dt,N);
     
     %path following with MPC
     X_wp = MPC(droneState(1:10), f , [xc;yc] , Vbar);
