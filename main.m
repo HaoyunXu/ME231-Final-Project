@@ -19,7 +19,7 @@ deltaF = rand(1,1000)*pi/3-pi/6;%steering angle is between -30 deg and 30 deg
 i = 1;
 
 L=10;
-History = zeros(2,L);
+History = kron(ones(1,L),[vc;psi_c]);
 
 N=10; %MPC horizon
 dt = 0.1; % sampling time
