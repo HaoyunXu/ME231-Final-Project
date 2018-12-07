@@ -1,4 +1,4 @@
-function [xchat, thetachat, vchat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt)
+function [xc_hat, thetac_hat, vc_hat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt)
 betav=0.5;
 betaleft=0.5;
 betaright=0.5;
@@ -30,8 +30,8 @@ thetaleftbar=atan2(sinsumleft,cossumleft);
 thetarightbar=atan2(sinsumright,cossumright);
 
 R=vbar*N*dt;
-thetaencl=thetaleftbar+thetarightbar;
-xchat=R/(1+sin(thetaencl/2));
-thetachat=thetarightbar-thetaencl/2;
-vchat=vbar; %?
+thetaencl=-thetaleftbar+thetarightbar;
+xc_hat=R/(1+sin(thetaencl/2));
+thetac_hat=thetarightbar-thetaencl/2;
+vc_hat=vbar; %?
 end
