@@ -32,7 +32,7 @@
  
  %% Constraint Sets
  % Input Constraints
- uL=[-1/18*pi*ones(2,1);0];uU=[1/18*pi*ones(2,1);5];
+ uL=[-1/3*pi*ones(2,1);0];uU=[1/3*pi*ones(2,1);5];
  % State Constraints of the form A_ie*X<=b_ie
  A_ie=[0 0 1 0 0 0 0 0 0 0;
        0 0 -1 0 0 0 0 0 0 0;
@@ -44,7 +44,7 @@
        0 0 0 0 0 0 0 -1 0 0;
        0 0 0 0 0 0 0 0 -1 0
        0 0 0 0 0 0 0 0 1 0];
- max_roll=1/9*pi; max_pitch=1/9*pi;
+ max_roll=1/3*pi; max_pitch=1/3*pi;
  max_p=pi/2;max_q=pi/2;
  b_ie=[kron([max_pitch;max_q;max_roll;max_p],ones(2,1));0;200];
  % Terminal Set Computation
