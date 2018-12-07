@@ -3,7 +3,7 @@ Receding Horizon Control Problem for Tracking MPC
 
 HOW to connect Linux Machine to MATLAB ROS Master:
 
-Step 1: Figure out the IP address on the windows machine running MATLAB.  (refer it to mat in future tutorial)
+Step 1: Figure out the IP address on the windows machine running MATLAB.  (mat=the IP of the machine running matlab)
 Step 2: Check IP of the linux machine with hostname -I command. (refer the IP as lin in future tutorial)
 Step 3: On linux machine start a new terminal and do following set ups:
 
