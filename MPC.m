@@ -46,7 +46,7 @@
        0 0 0 0 0 0 0 0 1 0];
  max_roll=1/9*pi; max_pitch=1/9*pi;
  max_p=pi/2;max_q=pi/2;
- b_ie=[kron([-max_pitch;-max_q;-max_roll;-max_p],ones(2,1));0;200];
+ b_ie=[kron([max_pitch;max_q;max_roll;max_p],ones(2,1));0;200];
  % Terminal Set Computation
  xcl=xc-V_bar*N*del_T*ones(2,1);xcu=xc+V_bar*N*del_T*ones(2,1);
  A_f=[1 zeros(1,9);zeros(1,4) 1 zeros(1,5);-1 zeros(1,9);zeros(1,4) -1 zeros(1,5);A_ie];
