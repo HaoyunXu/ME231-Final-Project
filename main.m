@@ -19,7 +19,7 @@ deltaF = rand(1,1000)*pi/3-pi/6;%steering angle is between -30 deg and 30 deg
 i = 1;
 
 L=10;
-History = kron(ones(1,L),[vc;psi_c]);
+History = zeros(2,L);
 
 N=10; %MPC horizon
 dt = 0.1; % sampling time
@@ -29,12 +29,12 @@ Vbar = 1;
 Thetaleftbar = -pi/6;
 Thetarightbar = pi/6;
 while(1)
-    pos = receive(receiver3);
-    Att = receive(receiver2);
-    Vel = receive(receiver4);
-    AngVel = receive(receiver1);
+    pos = receive(receiver3,1);
+    Att = receive(receiver2,1);
+    Vel = receive(receiver4,1);
+    AngVel = receive(receiver1,1);
     display('received')
-    droneState=[pos.X;Vel.X;Att.X;AngVel.X;pos.Y;Vel.Y;Att.Y;AngVel.Y;pos.Z;Vel.Z];
+    droneState=[pos.X;Vel.X;Att.Y;AngVel.Y;pos.Y;Vel.Y;Att.X;AngVel.X;pos.Z;Vel.Z];
     
     [xc,yc,vc,psi_c] = bikeFE(xc,yc,vc,psi_c,a(i),deltaF(i));
     i = i+1;
@@ -51,15 +51,21 @@ while(1)
     vyheading=vc_hat*sin(psi_c-thetac_hat);
     
     %path generation
-    f = xref_interp([pos.X;pos.Y;pos.Z],[xheading;yheading;0],[Vel.X;Vel.Y;Vel.Z],[vxheading;vyheading;0],dt,N);
+    %State Vector = [X Vx Pitch Pitch_Rate Y Vy Roll Roll_Rate Z Vz]^T
+    %             = [pos.X Vel.X
+    %                Att.Y AngVel.Y
+    %                pos.Y Vel.Y
+    %                Att.X AngVel.X
+    %                pos.Z vel.Z]
+    xref = xref_interp([pos.X;Att.Y;pos.Y;Att.X;pos.Z],[xheading;0;yheading;0;0],[Vel.X;AngVel.Y;Vel.Y;AngVel.X;Vel.Z],[vxheading;0;vyheading;0;0],dt,N);
     
     %path following with MPC
-    X_wp = MPC(droneState(1:10), f , [xc;yc] , Vbar);
+    X_wp = MPC(droneState(1:10), xref , [xc;yc] , Vbar);
     
     %extract desired waypoint for low level control
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
-    display(pubmsg.X,pubmsg.Y)
+    fprintf('X: %f\t Y:%f\n', pubmsg.X, pubmsg.Y)
     
     send(pub,pubmsg);   
     
