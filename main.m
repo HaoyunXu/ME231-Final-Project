@@ -29,12 +29,12 @@ Vbar = 1;
 Thetaleftbar = -pi/6;
 Thetarightbar = pi/6;
 while(1)
-    pos = receive(receiver3);
-    Att = receive(receiver2);
-    Vel = receive(receiver4);
-    AngVel = receive(receiver1);
-    disp('received')
-    droneState=[pos.X;Vel.X;Att.X;AngVel.X;pos.Y;Vel.Y;Att.Y;AngVel.Y;pos.Z;Vel.Z];
+    pos = receive(receiver3,1);
+    Att = receive(receiver2,1);
+    Vel = receive(receiver4,1);
+    AngVel = receive(receiver1,1);
+    display('received')
+    droneState=[pos.X;Vel.X;Att.Y;AngVel.Y;pos.Y;Vel.Y;Att.X;AngVel.X;pos.Z;Vel.Z];
     
     [xc,yc,vc,psi_c] = bikeFE(xc,yc,vc,psi_c,a(i),deltaF(i));
     i = i+1;
@@ -45,17 +45,27 @@ while(1)
     
     %esitmation of car positions
     [xc_hat, thetac_hat, vc_hat] = Estimator(History, Vbar, Thetaleftbar, Thetarightbar, N, dt);
+    xheading=xc+xc_hat*cos(psi_c-thetac_hat);
+    yheading=yc+xc_hat*sin(psi_c-thetac_hat);
+    vxheading=vc_hat*cos(psi_c-thetac_hat);
+    vyheading=vc_hat*sin(psi_c-thetac_hat);
     
     %path generation
-    f = xref_interp([pos.X;pos.Y],[xc_hat;0],[Vel.X;Vel.Y],[vc_hat;0],dt,N);
+    %State Vector = [X Vx Pitch Pitch_Rate Y Vy Roll Roll_Rate Z Vz]^T
+    %             = [pos.X Vel.X
+    %                Att.Y AngVel.Y
+    %                pos.Y Vel.Y
+    %                Att.X AngVel.X
+    %                pos.Z vel.Z]
+    xref = xref_interp([pos.X;Att.Y;pos.Y;Att.X;pos.Z],[xheading;0;yheading;0;0],[Vel.X;AngVel.Y;Vel.Y;AngVel.X;Vel.Z],[vxheading;0;vyheading;0;0],dt,N);
     
     %path following with MPC
-    X_wp = MPC(droneState(1:10), f , [xc;yc] , Vbar);
+    X_wp = MPC(droneState(1:10), xref , [xc;yc] , Vbar);
     
     %extract desired waypoint for low level control
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
-    display(pubmsg.X,pubmsg.Y)
+    fprintf('X: %f\t Y:%f\n', pubmsg.X, pubmsg.Y)
     
     send(pub,pubmsg);   
     

@@ -35,4 +35,8 @@ T = 0:dt:N*dt;
 
 % f = @(t) abcd*[t.^3; t.^2; t; 1];
 
-xref = abcd*[T.^3; T.^2; T; 1];
+% xref    = abcd*[T.^3; T.^2; T; ones(1,size(T,2))];
+% xdotref = abcd*[3*T.^2; 2*T; ones(1,size(T,2)); zeros(1,size(T,2))];
+
+xref = abcd*[T.^3 3*T.^2; T.^2 2*T; T ones(1,size(T,2)); ones(1,size(T,2)) zeros(1,size(T,2))];
+xref = reshape(xref',[10,11]); % 10: state vector dimension, 11: horizon
