@@ -25,11 +25,12 @@
  G=[zeros(9,1);-g];
  % Computing Discrete time system matrices
  Temp=ss(A,B,[],[]);
+ Temp=c2d(Temp,del_T);
  AT=Temp.A;
  BT=Temp.B;
  Temp=ss(A,G,[],[]);
+ Temp=c2d(Temp,del_T);
  GT=Temp.B;
- 
  %% Constraint Sets
  % Input Constraints
  uL=[-1/3*pi*ones(2,1);0];uU=[1/3*pi*ones(2,1);5];
