@@ -69,6 +69,7 @@ while(1)
     %extract desired waypoint for low level control
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
+    pubmsg.Z = x_wp(9);
 %     fprintf('X: %f\t Y:%f\n', pubmsg.X, pubmsg.Y)
     
     % plot positions
