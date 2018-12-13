@@ -15,6 +15,7 @@ pubmsg = rosmessage(pub);
 %initial conditions
 xc=0; yc=0; vc=0; psi_c=0;
 a = rand(1,1000)*2-1; %between -1 and 1
+% TODO: Bound velocities
 deltaF = rand(1,1000)*pi/3-pi/6;%steering angle is between -30 deg and 30 deg
 i = 1;
 
@@ -22,24 +23,21 @@ L=10;
 History = zeros(2,L);
 
 N=10; %MPC horizon
-dt = 0.1; % sampling time
+dt = 0.5; % sampling time
 
 %bounds
 Vbar = 1;
 Thetaleftbar = -pi/6;
 Thetarightbar = pi/6;
-
 figure
 while(1)
     pos = receive(receiver3,1);
     Att = receive(receiver2,1);
     Vel = receive(receiver4,1);
     AngVel = receive(receiver1,1);
-
-    %Build state vector
+    display('received')
     droneState=[pos.X;Vel.X;Att.Y;AngVel.Y;pos.Y;Vel.Y;Att.X;AngVel.X;pos.Z;Vel.Z];
     
-    %update car state
     [xc,yc,vc,psi_c] = bikeFE(xc,yc,vc,psi_c,a(i),deltaF(i));
     i = i+1;
     
@@ -61,23 +59,22 @@ while(1)
     %                pos.Y Vel.Y
     %                Att.X AngVel.X
     %                pos.Z vel.Z]
-    xref = xref_interp([pos.X;Att.Y;pos.Y;Att.X;pos.Z],[xheading;0;yheading;0;0],[Vel.X;AngVel.Y;Vel.Y;AngVel.X;Vel.Z],[vxheading;0;vyheading;0;0],dt,N);
-    
+    xref = xref_interp([pos.X;Att.Y;pos.Y;Att.X;pos.Z],[xheading;0;yheading;0;0.2],[Vel.X;AngVel.Y;Vel.Y;AngVel.X;Vel.Z],[vxheading;0;vyheading;0;0],dt,N);
+    xref;
     %path following with MPC
-    X_wp = MPC(droneState(1:10), xref , [xc;yc] , Vbar);
-    
+    X_wp = MPC(droneState(1:10), xref , [xc;yc] , Vbar,dt,N);
+    abs(X_wp-droneState(1:10))
     %extract desired waypoint for low level control
+    % ALSO PICK OUT X_wp(2), X_wp(6) and X_wp(10) for translational
+    % velocities.
     pubmsg.X = X_wp(1);
     pubmsg.Y = X_wp(5);
-    pubmsg.Z = x_wp(9);
-%     fprintf('X: %f\t Y:%f\n', pubmsg.X, pubmsg.Y)
+    pubmsg.Z = X_wp(9);
+    fprintf('X: %f\t Y:%f\t Z:%f\n', pubmsg.X, pubmsg.Y, pubmsg.Z)
     
-    % plot positions
-    scatter3(xc,yc,0,1,[1 0 0])
+    scatter3(xc,yc,0,1,[0 1 0])
     scatter3(pos.X,pos.Y,pos.Z,1,[1 0 0])
     hold on
-
-    
     send(pub,pubmsg);   
     
 end
