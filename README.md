@@ -1,5 +1,6 @@
 # ME231-Final-Project
-Receding Horizon Control Problem for Tracking MPC
+Quadcopter Pursuing a Ground Vehicle using Model Predictive Control
+
 
 Presentation: 
 https://www.youtube.com/watch?v=wu1DD2hRdIk&feature=youtu.be&fbclid=IwAR2sD4Db17CvnKTFos6T7hKTfdVEQvkHxgCItDith9pXWfMoN8YT99xr_Y8
